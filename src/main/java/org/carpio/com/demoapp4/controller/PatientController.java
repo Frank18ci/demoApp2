@@ -106,4 +106,17 @@ public class PatientController {
         log.info("Created new patient: {}", patient.getFullName());
         return patient;
     }
+
+    @GetMapping("/cookie")
+    public String readCookie(@CookieValue(value = "user-token", defaultValue = "desconocido") String token) {
+        log.info("Reading cookie value: {}", token);
+        return "Cookie Value: " + token;
+    }
+    @GetMapping("/multiHeader")
+    public String getMultiHeader(
+            @RequestHeader("User-Agent") String userAgent,
+            @RequestHeader("Accept-Language") String acceptLanguage) {
+        log.info("User-Agent: {}, Accept-Language: {}", userAgent, acceptLanguage);
+        return "User-Agent: " + userAgent + ", Accept-Language: " + acceptLanguage;
+    }
 }
