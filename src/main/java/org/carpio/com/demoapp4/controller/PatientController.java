@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
 import java.util.Random;
@@ -29,6 +26,74 @@ public class PatientController {
     public ResponseEntity<?> getAllPatients(){
         log.info("Received request to fetch all patients");
         return ResponseEntity.ok(patientService.getAllPatients());
+    }
+    @GetMapping("/buscar")
+    public ResponseEntity<?> getPatientV1(@RequestParam String nro){
+        log.info("Received request to fetch patient with ID: {}", nro);
+        if(nro.length() > 0){
+            return ResponseEntity.ok(patientService.getPatientByNro(nro));
+        }
+        return null;
+    }
+    @GetMapping("/buscar2")
+    public ResponseEntity<?> getPatientV2(@RequestParam("gender") String gender, @RequestParam Integer age){
+        log.info("Received request to fetch patients with");
+        if(gender.length() > 0){
+            return ResponseEntity.ok(patientService.getPatientsByGenderAndAge(gender, age));
+        }
+        return null;
+    }
+    @GetMapping("/buscar3")
+    public ResponseEntity<?> getPatientV3(@RequestParam("otrov3") String otrov2){
+        log.info("Received request to fetch patient with ID: {}", otrov2);
+        if(otrov2.length() > 0){
+            return ResponseEntity.ok(patientService.getPatientByNro(otrov2));
+        }
+        return null;
+    }
+    @GetMapping("/buscar4/{age}")
+    public ResponseEntity<?> getPatientV4(@PathVariable("age") Integer age){
+        if(age > 0){
+            return ResponseEntity.ok(patientService.getAllPatientsByAge(age));
+        }
+        return null;
+    }
+    @GetMapping("/buscar5/{gender}/{age}")
+    public ResponseEntity<?> getPatientV5(@PathVariable("gender") String gender, @PathVariable("age") Integer age){
+        if(age > 0){
+            return ResponseEntity.ok(patientService.getPatientsByGenderAndAgeV2(gender, age));
+        }
+        return null;
+    }
+    @GetMapping("/buscar6/{age}")
+    public ResponseEntity<?> getPatientV6(@PathVariable("age") Integer age){
+        if(age > 0){
+            return ResponseEntity.ok(patientService.getPatientsByAgeLessThan(age));
+        }
+        return null;
+    }
+    @GetMapping("/buscarDocument")
+    public ResponseEntity<?> getPatientsByDocument(@RequestParam String document){
+        log.info("Received request to fetch patients with Document: {}", document);
+        return ResponseEntity.ok(patientService.getPatientsByDocument(document));
+    }
+    @GetMapping("/buscarGender")
+    public ResponseEntity<?> getPatientsByGender(@RequestParam String gender){
+        log.info("Received request to fetch patients with Gender: {}", gender);
+        return ResponseEntity.ok(patientService.getPatientsByGender(gender));
+    }
+    @PostMapping
+    public Patient create(@RequestBody Patient p){
+        return patientService.savePatient2(p);
+    }
+    @PutMapping("/{id}")
+    public Patient update(@PathVariable Long id, @RequestBody Patient p) {
+        return patientService.updatePatient(id, p);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        patientService.deletePatient(id);
+        return ResponseEntity.ok().build();
     }
     @PostMapping("/fake")
     public Patient createNewPatient() {
