@@ -1,6 +1,7 @@
 package org.carpio.com.demoapp4.controller;
 
 import com.github.javafaker.Faker;
+import org.carpio.com.demoapp4.dto.PatientDto;
 import org.carpio.com.demoapp4.model.Patient;
 import org.carpio.com.demoapp4.service.PatientService;
 import org.slf4j.Logger;
@@ -86,6 +87,10 @@ public class PatientController {
     public Patient create(@RequestBody Patient p){
         return patientService.savePatient2(p);
     }
+    @PostMapping("/mapstruct")
+    public PatientDto createv2(@RequestBody PatientDto p){
+        return patientService.savePatient3(p);
+    }
     @PutMapping("/{id}")
     public Patient update(@PathVariable Long id, @RequestBody Patient p) {
         return patientService.updatePatient(id, p);
@@ -118,5 +123,11 @@ public class PatientController {
             @RequestHeader("Accept-Language") String acceptLanguage) {
         log.info("User-Agent: {}, Accept-Language: {}", userAgent, acceptLanguage);
         return "User-Agent: " + userAgent + ", Accept-Language: " + acceptLanguage;
+    }
+
+    @GetMapping("/patients-personalizado")
+    public ResponseEntity<?> getPatientsByFullName(@RequestParam String fullName){
+        log.info("Received request to fetch patients with full name like: {}", fullName);
+        return ResponseEntity.ok(patientService.getPatientsByFullName(fullName));
     }
 }

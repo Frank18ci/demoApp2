@@ -1,7 +1,9 @@
 package org.carpio.com.demoapp4.service;
 
+import org.carpio.com.demoapp4.dto.PatientDto;
 import org.carpio.com.demoapp4.model.Patient;
 import org.carpio.com.demoapp4.repository.PatientRepository;
+import org.carpio.com.demoapp4.util.PatientMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientMapper patientMapper;
 
     public List<Patient> getAllPatients(){
         log.info("Fetching all patients from the database");
@@ -70,6 +75,11 @@ public class PatientService {
         log.info("Saving new patient v2: {}", patient.getFullName());
         return patientRepository.save(patient);
     }
+    public PatientDto savePatient3(PatientDto patient){
+        log.info("Saving new patient v3: {}", patient.getNombres());
+        Patient patientNew = patientRepository.save(patientMapper.patientDtoToPatient(patient));
+        return patientMapper.patientToPatientDto(patientNew);
+    }
     public Patient updatePatient(Long id, Patient patient){
         log.info("Updating patient: {}", patient.getFullName());
         Patient existingPatient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
@@ -83,6 +93,10 @@ public class PatientService {
         //Validar si existe
         Patient existingPatient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
         patientRepository.delete(existingPatient);
+    }
+    public List<Patient> getPatientsByFullName(String fullName){
+        log.info("Fetching patients with full name like: {}", fullName);
+        return patientRepository.findAllPatientsByFullNamePersonalizado(fullName);
     }
 
 }
